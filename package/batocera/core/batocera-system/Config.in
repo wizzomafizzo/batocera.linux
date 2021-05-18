@@ -1039,9 +1039,11 @@ config BR2_PACKAGE_BATOCERA_LINUX_FIRMWARES
 config BR2_PACKAGE_BATOCERA_WAYLAND
 	bool "batocera.linux wayland system"
 
+	select BR2_PACKAGE_LINUX_PAM
 	select BR2_PACKAGE_WAYLAND
 	select BR2_PACKAGE_WAYLANDPP
-	select BR2_PACKAGE_CAGE
+	select BR2_PACKAGE_WESTON
+	select BR2_PACKAGE_WESTON_DRM
 
 config BR2_PACKAGE_BATOCERA_XORG
 	bool "batocera.linux xorgs packages selection"
