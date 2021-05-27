@@ -29,6 +29,11 @@ else
 	PPSSPP15_CONF_OPTS += -DUSE_FFMPEG=ON
 endif
 
+# odroid xu4
+ifeq ($(BR2_PACKAGE_SDL2_KMSDRM),y)
+PPSSPP15_CONF_OPTS += -DUSING_EGL=OFF -DUSING_GLES2=ON
+endif
+
 # rpi1 / rpi2 /rp3
 ifeq ($(BR2_PACKAGE_RPI_USERLAND),y)
 	PPSSPP15_DEPENDENCIES += rpi-userland

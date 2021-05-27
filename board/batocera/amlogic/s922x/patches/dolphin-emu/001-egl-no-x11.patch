@@ -5,7 +5,7 @@
    find_package(EGL)
    if(EGL_FOUND)
 -    add_definitions(-DHAVE_EGL=1)
-+    add_definitions(-DHAVE_EGL=1 -DEGL_NO_X11=1)
++    add_definitions(-DHAVE_EGL=1 -DMESA_EGL_NO_X11_HEADERS)
      message(STATUS "EGL OpenGL interface enabled")
      find_package(Libdrm)
      find_package(Libgbm)
