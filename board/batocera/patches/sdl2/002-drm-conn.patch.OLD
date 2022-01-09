@@ -1,0 +1,66 @@
+diff --git a/src/video/kmsdrm/SDL_kmsdrmvideo.c b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+index f0deeb9..69d7cfd 100644
+--- a/src/video/kmsdrm/SDL_kmsdrmvideo.c
++++ b/src/video/kmsdrm/SDL_kmsdrmvideo.c
+@@ -87,6 +87,19 @@ check_modestting(int devindex)
+ 
+     SDL_snprintf(device, sizeof (device), KMSDRM_DRI_DEVFMT, KMSDRM_DRI_PATH, devindex);
+ 
++    // batocera
++    FILE* fdDrmConn;
++    int drmConn = 0;
++    int drmConnRead;
++    if((fdDrmConn = fopen("/var/run/drmConn", "r")) != NULL) {
++      if(fscanf(fdDrmMode, "%i", &drmConnRead) == 1) {
++	if(drmConnRead>=0 && drmConn<resources->count_connectors) {
++	  drmConn = drmConnRead;
++	}
++      }
++    }
++    //
++
+     drm_fd = open(device, O_RDWR | O_CLOEXEC);
+     if (drm_fd >= 0) {
+         if (SDL_KMSDRM_LoadSymbols()) {
+@@ -105,7 +118,11 @@ check_modestting(int devindex)
+                 {
+                     available = SDL_FALSE;
+                     for (i = 0; i < resources->count_connectors; i++) {
+-                        drmModeConnector *conn = KMSDRM_drmModeGetConnector(drm_fd,
++		      drmModeConnector *conn;
++
++		      if(i != drmConn) continue;
++
++		      conn = KMSDRM_drmModeGetConnector(drm_fd,
+                             resources->connectors[i]);
+ 
+                         if (!conn) {
+@@ -825,10 +842,27 @@ int KMSDRM_InitDisplays (_THIS) {
+         goto cleanup;
+     }
+ 
++    // batocera
++    FILE* fdDrmConn;
++    int drmConn = 0;
++    int drmConnRead;
++    if((fdDrmConn = fopen("/var/run/drmConn", "r")) != NULL) {
++      if(fscanf(fdDrmMode, "%i", &drmConnRead) == 1) {
++	if(drmConnRead>=0 && drmConn<resources->count_connectors) {
++	  drmConn = drmConnRead;
++	}
++      }
++    }
++    //
++
+     /* Iterate on the available connectors. For every connected connector,
+        we create an SDL_Display and add it to the list of SDL Displays. */
+     for (i = 0; i < resources->count_connectors; i++) {
+-        drmModeConnector *connector = KMSDRM_drmModeGetConnector(viddata->drm_fd,
++      drmModeConnector *connector;
++
++      if(i != drmConn) continue;
++
++      connector = KMSDRM_drmModeGetConnector(viddata->drm_fd,
+             resources->connectors[i]);
+ 
+         if (!connector) {
